@@ -1,24 +1,28 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import ActivityList from "./ActivityList";
-import ActivityDetails from "../details/ActivityDetails";
-import ActivityForm from "../form/ActivityForm";
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 interface ActivitiesDashboardProps {}
 
 const ActivitiesDashboard: FC<ActivitiesDashboardProps> = ({}) => {
   const { activityStore } = useStore();
-  const { editMode, selectedActivity } = activityStore;
+  useEffect(() => {
+    activityStore.loadActivities();
+  }, [activityStore]);
+
+  if (activityStore.loadingInitial) {
+    return <LoadingComponent content="Loading" />;
+  }
   return (
     <Grid>
       <Grid.Column width={"10"}>
         <ActivityList />
       </Grid.Column>
       <Grid.Column width={"6"}>
-        {selectedActivity && !editMode && <ActivityDetails />}
-        {editMode && <ActivityForm />}
+        <h2>Activity Filters</h2>
       </Grid.Column>
     </Grid>
   );
