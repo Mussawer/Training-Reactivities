@@ -1,0 +1,12 @@
+namespace API.DTOs
+{
+    //DTO: data transfer objects that persist data in between processes
+    //saving data using api and getting back data from api
+    public class UserDTO
+    {
+        public string DisplayName { get; set; }
+        public string Token { get; set; }
+        public string Username { get; set; }
+        public string Image { get; set; }
+    }
+}

@@ -1,15 +1,33 @@
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
     public class Seed
     {
         // static method of a class can be used without creating new instance of class
-        public static async Task SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<User> userManager)
         {
+
+            if (!userManager.Users.Any())
+            {
+                var users = new List<User>
+                {
+                    new User{DisplayName="Tayfur", UserName="tyfr", Email="terkenci@gmail.com"},
+                    new User{DisplayName="Tom", UserName="tom", Email="tom@gmail.com"},
+                    new User{DisplayName="Jane", UserName="jane", Email="jane@gmail.com"}
+                };
+
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "Pa$$w0rd");
+                }
+
+            }
+
             // if data is present in Activities then return
             if (context.Activities.Any()) return;
-            
+
             // else add this list to table
             var activities = new List<Activity>
             {
