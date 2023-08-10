@@ -3,7 +3,7 @@ import { Button, Header, Segment } from "semantic-ui-react";
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Activity } from "../../../app/types/activity";
+import { Activity, ActivityFormValues } from "../../../app/types/activity";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -27,15 +27,7 @@ const ActivityForm: FC<ActivityFormProps> = ({}) => {
   } = activityStore;
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activity, setActivity] = useState<Activity>({
-    id: "",
-    title: "",
-    category: "",
-    description: "",
-    date: null,
-    city: "",
-    venue: "",
-  });
+  const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
   const validationSchema = Yup.object({
     title: Yup.string().required("The activity title is required"),
@@ -49,13 +41,13 @@ const ActivityForm: FC<ActivityFormProps> = ({}) => {
   useEffect(() => {
     if (id) {
       loadActivity(id).then((activity) => {
-        setActivity(activity!);
+        setActivity(new ActivityFormValues(activity)!);
       });
     }
   }, [id, loadActivity]);
 
-  function handleFormSubmit(activity: Activity) {
-    if (activity.id.length === 0) {
+  function handleFormSubmit(activity: ActivityFormValues) {
+    if (!activity.id) {
       let newActivity = {
         ...activity,
       };
