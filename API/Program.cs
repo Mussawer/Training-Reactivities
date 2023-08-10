@@ -2,9 +2,11 @@ using API.Extensions;
 using API.Middleware;
 using Application.Activities;
 using Application.Core;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -37,6 +39,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Create>();
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+//this will make this available to be injected inside application handlers
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 var app = builder.Build();
 
