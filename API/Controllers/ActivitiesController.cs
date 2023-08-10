@@ -1,11 +1,13 @@
 using Application.Activities;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     // this means that it already has api attributes
     // it has root and its deriving from controller base 
+    [AllowAnonymous]
     public class ActivitiesController : BaseApiController
     {
         // to query our database we need to utilize dependency injection so that we can

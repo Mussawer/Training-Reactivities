@@ -1,14 +1,23 @@
 import React, { FC } from 'react'
+import { Message } from 'semantic-ui-react';
 
 interface ValidationErrorProps {
-  erros: string[]
+  errors: any;
 }
 
-const ValidationError: FC<ValidationErrorProps> = ({  }) => {
+const ValidationError: FC<ValidationErrorProps> = ({ errors }) => {
   return (
-    <div>
-     ValidationError
-    </div>
+    <Message>
+      {errors && (
+        <Message.List>
+          {
+            errors.map((err: any, i: any) => (
+              <Message.Item key={i}>{err}</Message.Item>
+            ))
+          }
+        </Message.List>
+      )}
+    </Message>
   )
 }
 
