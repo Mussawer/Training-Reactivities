@@ -6,6 +6,7 @@ using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,6 +43,9 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 //this will make this available to be injected inside application handlers
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+//this will make this available to be injected inside application handlers
+builder.Services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
 var app = builder.Build();
 
