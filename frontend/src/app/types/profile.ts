@@ -5,6 +5,7 @@ export interface Profile {
     displayName: string;
     image?: string;
     bio?: string;
+    photos?: Photo[]
 }
 
 // create the class so in the constructor of the class 
@@ -18,4 +19,10 @@ export class Profile implements Profile {
         this.displayName=user.displayName;
         this.image=user.image;
     }
+}
+
+export interface Photo {
+    id: string;
+    url: string;
+    isMain: boolean;
 }
