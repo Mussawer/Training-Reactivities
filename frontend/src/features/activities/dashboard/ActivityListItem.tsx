@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useStore } from "../../../app/stores/store";
 import { format } from "date-fns";
 import ActivityAttendeesList from "./ActivityAttendeesList";
+import { observer } from "mobx-react-lite";
 
 interface ActivityListItemProps {
   activity: Activity;
@@ -82,4 +83,4 @@ const ActivityListItem: FC<ActivityListItemProps> = ({ activity }) => {
   );
 };
 
-export default ActivityListItem;
+export default observer(ActivityListItem);

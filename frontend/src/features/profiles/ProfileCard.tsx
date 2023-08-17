@@ -10,13 +10,14 @@ interface ProfileCardProps {
 
 const ProfileCard: FC<ProfileCardProps> = ({ profile }) => {
   return (
-    <Card as={Link} to={`/profiles/${profile.username}`}>
+    <Card as={Link} to={`/profiles/${profile.userName}`}>
       <Image src={profile.image || "/assets/user.png"} />
       <Card.Content>
         <Card.Header>{profile.displayName}</Card.Header>
-        <Card.Description extra>
-          <Icon name="user" />
-          20 followers
+        <Card.Description>
+          {profile.bio && profile.bio?.length > 40
+            ? profile.bio?.slice(0, 37) + "..."
+            : profile.bio}
         </Card.Description>
       </Card.Content>
     </Card>

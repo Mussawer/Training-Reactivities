@@ -52,7 +52,7 @@ const ActivityHeader: FC<ActivityHeaderProps> = ({ activity }) => {
                 <p>
                   Hosted by{" "}
                   <strong>
-                    <Link to={`/profiles/${activity.host?.username}`}>
+                    <Link to={`/profiles/${activity.host?.userName}`}>
                       {activity.host?.displayName}
                     </Link>{" "}
                   </strong>

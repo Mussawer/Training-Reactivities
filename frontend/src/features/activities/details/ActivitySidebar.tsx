@@ -24,14 +24,14 @@ const ActivitySidebar: FC<ActivitySidebarProps> = ({activity : {host, attendees}
         <List relaxed divided>
           {attendees.map(attendee => (
 
-          <Item style={{ position: "relative" }} key={attendee.username}>
+          <Item style={{ position: "relative" }} key={attendee.userName}>
             <Label style={{ position: "absolute" }} color="orange" ribbon="right">
               Host
             </Label>
             <Image size="tiny" src={attendee.image || "/assets/user.png"} />
             <Item.Content verticalAlign="middle">
               <Item.Header as="h3">
-                <Link to={`profile/${attendee.username}`}>{attendee.username}</Link>
+                <Link to={`profile/${attendee.userName}`}>{attendee.userName}</Link>
               </Item.Header>
               <Item.Extra style={{ color: "orange" }}>Following</Item.Extra>
             </Item.Content>

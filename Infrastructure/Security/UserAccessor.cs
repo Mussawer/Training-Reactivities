@@ -16,7 +16,8 @@ namespace Infrastructure.Security
         }
         public string GetUserName()
         {
-            return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            var result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            return result;
         }
     }
 }

@@ -28,7 +28,7 @@ const ActivityDetails: FC<ActivityDetailsProps> = ({}) => {
       <Grid.Column width={10}>
         <ActivityHeader activity={activity} />
         <ActivityInfo activity={activity} />
-        <ActivityChat />
+        <ActivityChat activityId={activity.id}/>
       </Grid.Column>
       <Grid.Column width={6}>
       <ActivitySidebar activity={activity} />

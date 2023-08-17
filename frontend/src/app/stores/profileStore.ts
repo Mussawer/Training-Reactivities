@@ -16,7 +16,7 @@ export default class ProfileStore {
   //computed property to get current user
   get isCurrentUser() {
     if (store.userStore.user && this.profile) {
-      return store.userStore.user.username === this.profile.username;
+      return store.userStore.user.username === this.profile.userName;
     }
     return false;
   }
@@ -87,6 +87,23 @@ export default class ProfileStore {
     } catch (error) {
       runInAction(() => (this.loading = false));
       console.log(error);
+    }
+  };
+
+  updateProfile = async (profile: Partial<Profile>) => {
+    this.loading = true;
+    try {
+      await agent.Profiles.editProfile(profile);
+      runInAction(() => {
+        if (profile.displayName && profile.displayName !== store.userStore.user?.displayName) {
+          store.userStore.setDisplayName(profile.displayName);
+        }
+        this.profile = { ...this.profile, ...(profile as Profile) };
+        this.loading = false;
+      });
+    } catch (error) {
+      console.log("🚀 ~ file: profileStore.ts:105 ~ updateProfile= ~ error:", error);
+      runInAction(() => (this.loading = false));
     }
   };
 }

@@ -11,7 +11,7 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Photo",
+                name: "Photos",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
@@ -31,7 +31,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photo_UserId",
-                table: "Photo",
+                table: "Photos",
                 column: "UserId");
         }
 

@@ -68,6 +68,12 @@ export default class ActivityStore {
   };
 
   private setActivity = (activity: Activity) => {
+    const user = store.userStore.user;
+    if (user) {
+      activity.isGoing = activity.attendees!.some((a) => a.userName === user.username);
+      activity.isHost = activity.hostUsername === user.username;
+      activity.host = activity.attendees?.find((x) => x.userName === activity.hostUsername);
+    }
     activity.date = new Date(activity.date!);
     this.activityRegistry.set(activity.id, activity);
   };
@@ -135,7 +141,7 @@ export default class ActivityStore {
       runInAction(() => {
         if (this.selectedActivity?.isGoing) {
           this.selectedActivity.attendees = this.selectedActivity.attendees?.filter(
-            (a) => a.username !== user?.username
+            (a) => a.userName !== user?.username
           );
           this.selectedActivity.isGoing = false;
         } else {
@@ -153,21 +159,18 @@ export default class ActivityStore {
     }
   };
 
-  cancelActivityToggle= async () => {
-    this.loading=true;
+  cancelActivityToggle = async () => {
+    this.loading = true;
     try {
-        await agent.Activities.attend(this.selectedActivity!.id);
-        runInAction(() => {
-            this.selectedActivity!.isCancelled=!this.selectedActivity?.isCancelled;
-            this.activityRegistry.set(this.selectedActivity!.id,this.selectedActivity!);
-        })
+      await agent.Activities.attend(this.selectedActivity!.id);
+      runInAction(() => {
+        this.selectedActivity!.isCancelled = !this.selectedActivity?.isCancelled;
+        this.activityRegistry.set(this.selectedActivity!.id, this.selectedActivity!);
+      });
     } catch (error) {
-        console.log(error);
-    } 
-    finally
-    {
-        runInAction(() => this.loading = false);
+      console.log(error);
+    } finally {
+      runInAction(() => (this.loading = false));
     }
-
-} 
+  };
 }

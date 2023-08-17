@@ -29,6 +29,22 @@ namespace API.Extensions
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+                opt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        // if the path matches the end point (chat)
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
+                        {
+                            // adding token to context
+                            // authenticates to signalr hub
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
             services.AddAuthorization(opt =>
             {

@@ -6,6 +6,7 @@ interface ValidationErrorProps {
 }
 
 const ValidationError: FC<ValidationErrorProps> = ({ errors }) => {
+  console.log("🚀 ~ file: ValidationError.tsx:9 ~ errors:", errors)
   return (
     <Message>
       {errors && (
