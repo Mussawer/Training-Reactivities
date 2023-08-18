@@ -5,6 +5,7 @@ using MediatR;
 using Persistence;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Application.Interfaces;
 
 namespace Application.Activities
 {
@@ -18,12 +19,15 @@ namespace Application.Activities
         public class Handler : IRequestHandler<Query, Response<ActivityDTO>>
         {
             private readonly DataContext _context;
+            private readonly IUserAccessor _userAccessor;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
-            {
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor)
+                {
                 _mapper = mapper;
+                _userAccessor = userAccessor;
                 _context = context;
-            }
+
+                }
             public async Task<Response<ActivityDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
                 //if found send the activity if not then send nulls

@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import React, { FC } from "react";
 import { Button, Divider, Grid, Header, Item, Reveal, Segment, Statistic } from "semantic-ui-react";
 import { Profile } from "../../app/types/profile";
+import FollowButton from "./FollowButton";
 
 interface ProfileHeaderProps {
   profile: Profile;
@@ -23,8 +24,8 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ profile }) => {
         </Grid.Column>
         <Grid.Column width={4}>
           <Statistic.Group widths={2}>
-            <Statistic label="Followers" value="5" />
-            <Statistic label="Following" value="42" />
+            <Statistic label="Followers" value={profile.followersCount} />
+            <Statistic label="Following" value={profile.followingCount} />
           </Statistic.Group>
           <Divider />
           <Reveal animated="move">
@@ -40,6 +41,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ profile }) => {
               />
             </Reveal.Content>
           </Reveal>
+          <FollowButton profile={profile} />
         </Grid.Column>
       </Grid>
     </Segment>

@@ -6,6 +6,9 @@ export interface Profile {
     image?: string;
     bio?: string;
     photos?: Photo[]
+    followersCount: number;
+    followingCount: number;
+    following: boolean;
 }
 
 // create the class so in the constructor of the class 
