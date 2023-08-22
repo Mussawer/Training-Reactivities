@@ -1,4 +1,5 @@
 using Application.Activities;
+using Application.Core;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +18,14 @@ namespace API.Controllers
         // class and create new instance and then it sees it requires Datacontext
 
         [HttpGet] //api/activities
-        public async Task<IActionResult> GetActivities()
+        public async Task<IActionResult> GetActivities([FromQuery]ActivityParams param)
         {
             // we use send method of mediator this query to mediator handler   
             // api controller is sending request to our go between mediator
             // to application project that returns list of activities
             // back to api controller which is then send inside of an HTTp response to the client
-            var result = await Mediator.Send(new ActivitiesList.Query());
-            return HandleResult(result);
+            var result = await Mediator.Send(new ActivitiesList.Query{Params = param});
+            return HandlePagedResult(result);
         }
 
         [HttpGet("{id}")] //api/activities/id

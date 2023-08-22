@@ -1,10 +1,11 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Activity, ActivityFormValues } from "../types/activity";
 import agent from "../api/agents";
 import { v4 as uuid } from "uuid";
 import { format } from "date-fns";
 import { store } from "./store";
 import { Profile } from "../types/profile";
+import { Pagination, PagingParams } from "../types/pagination";
 
 export default class ActivityStore {
   activityRegistry = new Map<string, Activity>();
@@ -12,9 +13,65 @@ export default class ActivityStore {
   editMode = false;
   loading = false;
   loadingInitial = false;
+  pagination: Pagination | null = null;
+  pagingParams = new PagingParams();
+  predicate = new Map().set("all", true);
 
   constructor() {
     makeAutoObservable(this);
+    //react when initial predicte is set and then react whenever predicate changes
+    reaction(
+      () => this.predicate.keys(),
+      () => {
+        // when predicate changes, reset the pagination
+        this.pagingParams = new PagingParams();
+        this.activityRegistry.clear();
+        this.loadActivities();
+      }
+    );
+  }
+
+  setPagingParams = (pagingParams: PagingParams) => {
+    this.pagingParams = pagingParams;
+  };
+
+  setPredicate = (predicate: string, value: string | Date) => {
+    const resetPredicate = () => {
+      this.predicate.forEach((value, key) => {
+        if (key !== "startDate") this.predicate.delete(key);
+      });
+    };
+    switch (predicate) {
+      case "all":
+        resetPredicate();
+        this.predicate.set("all", true);
+        break;
+      case "isGoing":
+        resetPredicate();
+        this.predicate.set("isGoing", true);
+        break;
+      case "isHost":
+        resetPredicate();
+        this.predicate.set("isHost", true);
+        break;
+      case "startDate":
+        this.predicate.delete("startDate");
+        this.predicate.set("startDate", value);
+    }
+  };
+
+  get axiosParams() {
+    const params = new URLSearchParams();
+    params.append("pageNumber", this.pagingParams.pageNumber.toString());
+    params.append("pageSize", this.pagingParams.pageSize.toString());
+    this.predicate.forEach((value, key) => {
+      if (key === "startDate") {
+        params.append(key, (value as Date).toISOString());
+      } else {
+        params.append(key, value);
+      }
+    });
+    return params;
   }
 
   //computed property
@@ -37,15 +94,20 @@ export default class ActivityStore {
   loadActivities = async () => {
     this.setLoadingIntial(true);
     try {
-      const activities = await agent.Activities.activitiesList();
-      activities.forEach((activity: Activity) => {
+      const result = await agent.Activities.activitiesList(this.axiosParams);
+      result.data.forEach((activity: Activity) => {
         this.setActivity(activity);
       });
+      this.setPagination(result.pagination);
       this.setLoadingIntial(false);
     } catch (error) {
       console.log("🚀 ~ file: activityStore.ts:26 ~ loadActivities= ~ error:", error);
       this.setLoadingIntial(false);
     }
+  };
+
+  setPagination = (pagination: Pagination) => {
+    this.pagination = pagination;
   };
 
   loadActivity = async (id: string) => {
@@ -175,14 +237,13 @@ export default class ActivityStore {
   };
 
   updateAttendeeFollowing = (username: string) => {
-    this.activityRegistry.forEach(activity => {
-        activity.attendees.forEach(attendee => {
-            if(attendee.userName === username)
-            {
-                attendee.following ? attendee.followersCount-- : attendee.followersCount++;
-                attendee.following = !attendee.following;
-            }
-        })
-    })
-}
+    this.activityRegistry.forEach((activity) => {
+      activity.attendees.forEach((attendee) => {
+        if (attendee.userName === username) {
+          attendee.following ? attendee.followersCount-- : attendee.followersCount++;
+          attendee.following = !attendee.following;
+        }
+      });
+    });
+  };
 }
